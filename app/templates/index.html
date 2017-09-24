@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% import "_wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block page_content %}
+{% include '_posts.html' %}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+{{ pagedown.include_pagedown() }}
+{% endblock %}
+
+{% block footer %}
+<div class="container">
+    <div class="row">
+        <div class="col l6 s12">
+            <h5 class="white-text">这是个啥？</h5>
+            <p class="grey-text text-lighten-4">
+                天津科技大学计算机精英协会由2015年3月开始筹备成立，初衷是学院及学校当时没有计算机专业类社团，
+                故成立社团，聚集计算机爱好者，一同学习，进步。<br />
+                目前社团成员主要学习相关知识，并组队参加各类计算机比赛，参与老师的项目，与其它学院合作等。
+            </p>
+        </div>
+        <div class="col l4 offset-l2 s12">
+            <h5 class="white-text">联系方式？</h5>
+            <!-- base -->
+            <p class="grey-text text-lighten-4">电话：MTUwMjg2OTA2MjkK </p>
+            <!-- bit op -->
+            <p class="grey-text text-lighten-4">Telegram : '\r70\x1b$\x1e\x02S'</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

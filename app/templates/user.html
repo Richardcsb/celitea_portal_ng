@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{ user.name if user.name else user.username }} - {{super()}}{% endblock %}
+{% block page_content %}
+<!-- left -->
+<div class="col s12 m4 l4 center-align">
+    <p class="center-align"><img class="responsive-img" src="{{ user.gravatar(size=256) }}"></p>
+    <h4 class="user-header center-align">{{ user.name if user.name else user.username }}
+        {% if current_user.confirmed %}
+        <i class="material-icons" title="已确认">verified_user</i>
+        {% endif %}
+    </h4>
+    <p class="center-align">@{{ user.username }}&nbsp;</p>
+    <a class='dropdown-button btn  waves-effect waves-light' href='#' data-activates='dropdown1' id="connections">
+        其它地方的 @{{ user.username }}
+        <span class="caret"></span>
+    </a>
+    <ul id='dropdown1' class='dropdown-content flow-text'>
+        {% if user.telegram %}
+        <li>
+            <a href="https://telegram.me/{{user.telegram}}">Telegram:@{{user.telegram}}</a>
+        </li>
+        {% endif %}
+        {% if user.qq %}
+        <li>
+            <a href="javascript:void(0)">QQ:{{user.qq}}</a>
+        </li>
+        {% endif %}
+        {% if user.wechat %}
+        <li>
+            <a href="javascript:void(0)">微信:{{user.wechat}}</a>
+        </li>
+        {% endif %}
+        {% if user.weibo %}
+        <li>
+            <a href="http://weibo.com/{{user.weibo}}">新浪微博:@{{user.weibo}}</a>
+        </li>
+        {% endif %}
+        {% if user.twitter %}
+        <li>
+            <a href="https://twitter.com/{{user.twitter}}">Twitter:@{{user.twitter}}</a>
+        </li>
+        {% endif %}
+        {% if user.googleplus %}
+        <li>
+            <a href="{{user.googleplus}}">Google+</a>
+        </li>
+        {% endif %}
+        {% if user.github %}
+        <li>
+            <a href="https://github.com{{user.github}}">Github:@{{user.github}}</a>
+        </li>
+        {% endif %}
+        {% if user.zhihu %}
+        <li>
+            <a href="https://www.zhihu.com/people/{{user.zhihu}}">知乎:{{user.zhihu}}</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+<!-- right -->
+<div class="col s12 m8 l8">
+    <br />
+    {% if user.about_me %}
+    <blockquote class="flow-text">
+        {%for item in user.about_me.split("\n")%}
+        <p>{{item}}</p>
+        {% endfor %}
+    </blockquote>
+    {% endif %}
+    {% if user.is_moderator() %}
+        <p>&nbsp;<a href="mailto:{{ user.email }}"><i class="material-icons left md-24">email</i>&nbsp;{{ user.email }}</a></p>
+    {% endif %}
+    {% if user.blog %}
+        <p>&nbsp;<a href="{{ user.blog }}"><i class="material-icons left md-24">rss_feed</i>&nbsp;{{ user.blog }}</a></p>
+    {% endif %}
+    {% if user == current_user %}
+    <a class="btn btn-raised btn-primary" href="{{ url_for('.edit_profile') }}">编辑个人资料</a>
+    {% endif %}
+    {% if current_user.is_administrator() %}
+    <a class="btn btn-raised btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">编辑个人资料 <del>(施展权限汪之禁术)</del></a>
+    {% endif %}
+    {% if not current_user.is_member() %}
+    <a class="btn btn-raised btn-danger" href="{{ url_for('registration.register') }}">准备好加入咱了嘛~</a>
+    {% endif %}
+</div>
+
+{% endblock %}

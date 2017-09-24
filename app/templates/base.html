@@ -1,0 +1,125 @@
+{% import "_macros.html" as macros %}
+{% block doc -%}
+<!DOCTYPE html>
+<html{% block html_attribs %}{% endblock html_attribs %}>
+{%- block html %}
+    <head>
+    {%- block head %}
+    <title>{% block title %}计算机精英协会{% endblock title %}</title>
+
+    {%- block metas %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {%- endblock metas %}
+
+    {%- block styles %}
+    <link rel="stylesheet" href="https://fonts.proxy.ustclug.org/css?family=Roboto:300,400,500,700" type="text/css">
+    <link href="https://fonts.proxy.ustclug.org/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='css/materialize.min.css') }}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    {%- endblock styles %}
+    {%- endblock head %}
+    </head>
+    <body{% block body_attribs %}{% endblock body_attribs %}>
+    {% block body -%}
+    <nav class="light-blue lighten-1 nav-wrapper" role="navigation">
+        <ul id="slide-out" class="side-nav fixed">
+            <li>
+                <ul class="collapsible collapsible-accordion">
+                    <li>
+                        <div class="userView user-view collapsible-header valign-wrapper">
+                        <div class="background light-blue lighten-1">
+                        </div>
+                        {% if current_user.is_authenticated %}
+                        <a href="#!user"><img class="circle" src="{{ current_user.gravatar() }}"></a>
+                        <a href="#!name"><span class="white-text name">&nbsp;&nbsp;哈喽，{{ current_user.name or current_user.username}} (σ≧∀≦)σ</span></a>
+                        {% else %}
+                        <a href="#!user"><img class="circle" src="{{ url_for('static', filename='images/default_avatar.png') }}"></a>
+                        <a href="#!name"><span class="white-text name">&nbsp;&nbsp;哈喽，新朋友 ~(>_<~)</span></a>
+                        {% endif %}
+                        </div>    
+                        <div class="collapsible-body">
+                            <ul>
+                                {% if current_user.is_authenticated %}
+                                <li><a href="{{ url_for('main.user', username=current_user.username) }}"><i class="material-icons md-18">perm_identity</i>个人资料</a></li>
+                                <li><a href="{{ url_for('auth.change_password') }}"><i class="material-icons md-18">lock</i>更改密码</a></li>
+                                <li><a href="{{ url_for('auth.change_email_request') }}"><i class="material-icons md-18">email</i>更改邮件地址</a></li>
+                                <li><a href="{{ url_for('auth.logout') }}"><i class="material-icons md-18">eject</i>注销……</a></li>
+                                {% else %}
+                                <li><a href="{{ url_for('auth.login') }}"><i class="material-icons md-18">lock</i> 登录</a></li>
+                                {% endif %}
+                                <li><div class="divider"></div></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="/"><i class="material-icons">home</i>首页</a></li>
+            {% if config['OPEN_REGISTRATION'] and current_user.is_authenticated and not current_user.is_member() %}
+            <li><a href="{{ url_for('registration.main') }}"><i class="material-icons">input</i>报名</a></li>
+            {% endif %}
+            {% if current_user.is_member() %}
+            <li><a href="{{ url_for('main.create_post') }}"><i class="material-icons">create</i>新话题</a></li>
+            {% endif %}
+            {% if current_user.is_moderator() %}
+            <li><a href="{{ url_for('manage.manage_index') }}"><i class="material-icons">build</i>管理员工具箱</a></li>
+            {% endif %}
+            {% block navbar %}
+            {% endblock %}
+            <li><div class="divider"></div></li>
+            <li><a class="subheader">其它地方的 Celitea </a></li>
+            <li><a class="waves-effect" href="https://acm.celitea.cn">Online Judge</a></li>
+            <li><a class="waves-effect" href="https://github.com/TUST-Celitea">GitHub</a></li>
+        </ul>
+        <div class="nav-wrapper">
+            <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
+            <a href="{{ url_for('main.index') }}" class="brand-logo center">&nbsp;Celitea</a>
+        </div>
+    </nav>
+    <main class="container">
+        {% block content -%}
+        <br />
+        <div class="row contents">
+            {% block quotes %}
+            <div class="card-panel blue-grey darken-1 white-text" id="quotes">
+            </div>
+            {% endblock %}
+            {% block page_content %}
+
+            {% endblock %}
+        </div>
+        {%- endblock content %}
+        </div>
+    </main>
+    <footer class="page-footer light-blue lighten-1">
+        {% block footer %}
+        {% endblock %}
+        <div class="footer-copyright">
+            <div class="container">
+                © 2017 Celitea. Powered by 
+                <a class="grey-text text-lighten-4" href="https://github.com/Dogfalo/materialize">Materialize</a>.
+            </div>
+        </div>
+    </footer>
+    {% block scripts %}
+    <!--    Scripts     -->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/materialize.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/moment.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.rss.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/init.js') }}"></script>
+    <script>
+    moment.locale('zh-CN');
+    {% for message in get_flashed_messages() %}
+        Materialize.toast('{{ message }}', 4000);
+    {% endfor %}
+    </script>
+    {%- endblock scripts %}
+    {%- endblock body %}
+    </body>
+{%- endblock html %}
+</html>
+{% endblock doc -%}

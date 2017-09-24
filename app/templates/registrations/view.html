@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% import "_wtf.html" as wtf %}
+
+{% block title %}{{ reg.name }} 的报名信息 - {{super()}}{% endblock %}
+{% block page_content %}
+
+<!-- left -->
+<div class="col s12 m4 l4 center-align">
+    <p class="center-align">
+        <img class="responsive-img" src="{{ url_for('static', filename='uploads/{}'.format(reg.photo)) }}">
+    </p>
+        {% if priv_reg %}
+        <p class="center-align">
+        <a href="{{url_for('.view',classnum=priv_reg.classnum)}}" class="waves-effect waves-light btn"><i class="material-icons left md-24">keyboard_arrow_left</i>上一个：{{priv_reg.name}}</a>
+        </p>
+        {% endif %}
+        {% if next_reg %}
+        <p class="center-align">
+        <a href="{{url_for('.view',classnum=next_reg.classnum)}}" class="waves-effect waves-light btn"><i class="material-icons left md-24">keyboard_arrow_right</i>下一个：{{next_reg.name}}</a>
+        </p>
+        {% endif %}
+        <!-- Modal Trigger -->
+        <p class="center-align">
+        <a class="waves-effect waves-light btn modal-trigger red darken-1" href="#modal1"><i class="material-icons left md-24">clear</i>删除</a>
+        </p>
+        <a href="{{url_for('.lists')}}" class="waves-effect waves-light btn"><i class="material-icons left md-24">keyboard_backspace</i>&nbsp;返回</a>
+
+</div>
+<!-- right -->
+<div class="col s12 m8 l8">
+    <h4 class="user-header">{{ reg.name }}</h4>
+    <p>{{ reg.classnum }}&nbsp;</p>
+    <p>
+        {% if reg.gender %}
+            {{ {1:"♂🚹",2:"♀🚺"}[reg.gender] }}
+        {% else %}
+            ❓
+        {% endif %}
+    </p>
+    {% if reg.desc %}
+    <blockquote class="flow-text">
+        {{reg.desc}}
+    </blockquote>
+    {% endif %}
+    {% if reg.ablity %}
+    <blockquote>
+        {{reg.ablity}}
+    </blockquote>
+    {% endif %}
+    <ul class="collapsible" data-collapsible="accordion">
+        <li>
+            <div class="collapsible-header"><i class="material-icons">filter_drama</i>联系信息</div>
+            <div class="collapsible-body">
+                <div class="collection">
+                    {% if reg.email %}
+                        <a href="mailto:{{ reg.email }}" class="collection-item"><i class="material-icons left md-24">email</i>&nbsp;{{ reg.email }}</a>
+                    {% endif %}
+                    {% if reg.personal_page %}
+                        <a href="{{ reg.personal_page }}" class="collection-item"><i class="material-icons left md-24">rss_feed</i>&nbsp;{{ reg.personal_page }}</a>
+                    {% endif %}
+                    {% if reg.phone %}
+                        <a href="#" class="collection-item"><i class="material-icons left md-24">call</i>&nbsp;{{ reg.phone }}</a>
+                    {% endif %}
+                    {% if reg.telegram %}
+                        <a href="https://telegram.me/{{reg.telegram}}" class="collection-item"><i class="material-icons left md-24">send</i>Telegram:@{{reg.telegram}}</a>
+                    {% endif %}
+                    {% if reg.qq %}
+                        <a href="javascript:void(0)" class="collection-item"><i class="material-icons left md-24">message</i>QQ:{{reg.qq}}</a>
+                    {% endif %}
+                    {% if reg.wechat %}
+                        <a href="javascript:void(0)" class="collection-item"><i class="material-icons left md-24">textsms</i>微信:{{reg.wechat}}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header"><i class="material-icons">place</i>面试数据</div>
+            <div class="collapsible-body">
+                <div class="card">
+                    <div class="card-content">
+                        {{ wtf.quick_form(form) }}
+                    </div>
+                </div>
+            </div>
+        </li>
+  </ul>
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>想好啦？</h4>
+        </div>
+        <div class="modal-footer">
+            <a href="{{url_for('.delete',id=reg.id)}}" class=" modal-action modal-close waves-effect waves-green btn-flat">对，照我说的做！</a>
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">还是算了</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

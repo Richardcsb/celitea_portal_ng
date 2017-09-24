@@ -1,0 +1,18 @@
+<ul class="collection comments">
+    {% for comment in comments %}
+    <li class="collection-item avatar comment">
+        <a href="{{ url_for('.user', username=comment.author.username) }}">
+                <img class="circle" src="{{ comment.author.gravatar(size=64) }}">
+            </a>
+        <div class="comment-content">
+            <span class="title">{{comment.author.username}}</span>
+            <p>
+                {% if comment.body_html %} {{ comment.body_html | safe }} {% else %} {{ comment.body }} {% endif %}
+            </p>
+            <span class="secondary-content">
+                    {{ moment(comment.timestamp).fromNow() }}
+                </span>
+        </div>
+    </li>
+    {% endfor %}
+</ul>

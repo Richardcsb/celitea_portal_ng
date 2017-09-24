@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% import "_wtf.html" as wtf %}
+{% block welcome %}{% endblock %}
+
+
+{% block page_content %}
+    <h1>更改邮件地址</h1>
+<div class="col s12 m12 l4">
+    {{ wtf.quick_form(form) }}
+</div>
+{% endblock %}
