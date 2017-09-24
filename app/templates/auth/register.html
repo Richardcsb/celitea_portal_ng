@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% import "_wtf.html" as wtf %}
+
+{% block title %}注册 -{{super()}}{% endblock %}
+{% block welcome %}{% endblock %}
+{% block page_content %}
+    <h1>注册</h1>
+<div class="col s12 m12 l4">
+    {{ wtf.quick_form(form) }}
+</div>
+{% endblock %}

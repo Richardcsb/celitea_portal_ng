@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% import "_wtf.html" as wtf %}
+
+{% block title %}报名 - {{super()}}{% endblock %}
+{% block quotes %}
+<div class="card-panel blue-grey darken-1 white-text">
+    「呵呵呵呵。汝知道狼为什么要在山里头袭击人类吗？」
+    <br />
+    「那是因为狼想吃人类的脑袋，好得到人类的智慧。」
+</div>
+{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <h3>报名&nbsp;<small>好啊好啊~</small></h3>
+</div>
+
+<div class="col l6 m12 s12">
+    {{ wtf.quick_form(form) }}
+</div>
+{% endblock %}

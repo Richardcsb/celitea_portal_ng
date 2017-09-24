@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "_wtf.html" as wtf %}
+
+{% block title %}发表帖子{% if current_user.is_moderator() %}（或文章）- {{super()}}{% endif %}{% endblock %}
+
+{%- block styles %}
+{{ super()}}
+<link href="{{ url_for('static', filename='components/editor.md/css/editormd.min.css') }}" rel="stylesheet">
+{%- endblock styles %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>发表话题{% if current_user.is_moderator() %}（或文章）{% endif %}</h1>
+</div>
+{{ wtf.quick_form(form) }}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ editormd.include_editormd() }}
+</script>
+{% endblock %}

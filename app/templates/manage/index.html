@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}工具箱 - {{super()}}{% endblock %}
+
+{% block page_content %}
+<div class="row">
+    <div class="card-panel teal">
+        <span class="white-text">
+            给<del>权限汪</del>管理员的工具合集，不要滥用哟~ 😋
+        </span>
+    </div>
+    <div class="col s12 m6 l6">
+        <div class="card tiny blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">报名管理</span>
+                <p>报名人员和评价列表。</p>
+            </div>
+            <div class="card-action">
+                {% if config['OPEN_REGISTRATION'] %}
+                <a href="{{ url_for('registration.main') }}">一览兼删除 😂</a>
+                {% else %}
+                <a href="#">报名窗口关闭中，请稍候再来😂</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card tiny blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">标签</span>
+                <p>用标签划分兴趣，特长，任务，和其它各种方面……</p>
+            </div>
+            <div class="card-action">
+                <a href="{{ url_for('manage.list_tag') }}">一览兼增加和删除 😂</a>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m6 l6">
+        <div class="card tiny blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">群发消息</span>
+                <p>然而目前只有电子邮件（估计也没人看）</p>
+                <small>将来可能会有 IM 支持？</small>
+            </div>
+            <div class="card-action">
+                <a href="#">编辑和发送消息</a>
+            </div>
+        </div>
+        <div class="card tiny blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">帖子管理</span>
+                <p>增改查删（包括评论）😂</p>
+            </div>
+            <div class="card-action">
+                <a href="#">浏览</a>
+                <a href="#">发新帖</a>
+                <a href="#">评论管理</a>
+            </div>
+        </div>
+    </div>
+  </div>
+{% endblock %}
