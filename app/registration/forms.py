@@ -11,7 +11,6 @@ class RegistrationForm(flask_wtf.FlaskForm):
     classnum = wtforms.StringField('学号', validators=[DataRequired(), Length(8)])
     gender = wtforms.SelectField('性别', validators=[DataRequired()])
     phone = wtforms.StringField('电话号码', validators=[DataRequired(), Length(11, 11)])
-    ability = wtforms.TextAreaField('汝都擅长些啥咧？')
     desc = wtforms.TextAreaField('介绍下汝自己呗~')
     photo = wtforms.FileField('不留张照片？')
     submit = wtforms.SubmitField('就这样?')

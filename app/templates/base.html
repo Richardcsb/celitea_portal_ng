@@ -65,8 +65,9 @@
             <li><a href="{{ url_for('main.create_post') }}"><i class="material-icons">create</i>新话题</a></li>
             {% endif %}
             {% if current_user.is_moderator() %}
-            <li><a href="{{ url_for('manage.manage_index') }}"><i class="material-icons">build</i>管理员工具箱</a></li>
+            <li><a href="{{ url_for('manage.manage_index') }}"><i class="material-icons">build</i>管理员工具箱</a></li>          
             {% endif %}
+            <li><a href="#"><i class="material-icons">archive</i>文章归档</a></li>            
             {% block navbar %}
             {% endblock %}
             <li><div class="divider"></div></li>

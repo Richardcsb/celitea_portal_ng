@@ -48,7 +48,6 @@ def register():
             register.classnum = form.classnum.data
             register.name = form.name.data
             register.gender = form.gender.data
-            register.ablity = form.ablity.data.replace("\r\n", "\n")
             register.desc = form.desc.data.replace("\r\n", "\n")
             register.phone = form.phone.data
             file = request.files['photo']
