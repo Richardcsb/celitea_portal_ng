@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 32cc07ae5472
-Revises: 
-Create Date: 2017-09-18 19:55:47.574319
+Revision ID: d0535a3adec1
+Revises: daca81e2cd15
+Create Date: 2017-09-25 16:41:10.094791
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '32cc07ae5472'
-down_revision = None
+revision = 'd0535a3adec1'
+down_revision = 'daca81e2cd15'
 branch_labels = None
 depends_on = None
 
@@ -88,11 +88,12 @@ def upgrade():
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
     op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     op.create_table('connections',
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('user_tag_id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('user_tag_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['user_tag_id'], ['tags.id'], ),
-    sa.PrimaryKeyConstraint('user_id', 'user_tag_id')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('posts',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -101,6 +102,7 @@ def upgrade():
     sa.Column('body', sa.Text(), nullable=True),
     sa.Column('body_html', sa.Text(), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
+    sa.Column('published', sa.DateTime(), nullable=True),
     sa.Column('author_id', sa.Integer(), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['author_id'], ['users.id'], ),
@@ -108,6 +110,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_posts_is_post'), 'posts', ['is_post'], unique=False)
+    op.create_index(op.f('ix_posts_published'), 'posts', ['published'], unique=False)
     op.create_index(op.f('ix_posts_timestamp'), 'posts', ['timestamp'], unique=False)
     op.create_table('comments',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -123,11 +126,12 @@ def upgrade():
     )
     op.create_index(op.f('ix_comments_timestamp'), 'comments', ['timestamp'], unique=False)
     op.create_table('post_connections',
-    sa.Column('post_id', sa.Integer(), nullable=False),
-    sa.Column('post_tag_id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('post_id', sa.Integer(), nullable=True),
+    sa.Column('post_tag_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['post_id'], ['posts.id'], ),
     sa.ForeignKeyConstraint(['post_tag_id'], ['tags.id'], ),
-    sa.PrimaryKeyConstraint('post_id', 'post_tag_id')
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 
@@ -138,6 +142,7 @@ def downgrade():
     op.drop_index(op.f('ix_comments_timestamp'), table_name='comments')
     op.drop_table('comments')
     op.drop_index(op.f('ix_posts_timestamp'), table_name='posts')
+    op.drop_index(op.f('ix_posts_published'), table_name='posts')
     op.drop_index(op.f('ix_posts_is_post'), table_name='posts')
     op.drop_table('posts')
     op.drop_table('connections')

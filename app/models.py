@@ -343,7 +343,7 @@ class Category(db.Model):
 
 class PostConnection(db.Model):
     __tablename__ = 'post_connections'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     post_tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'))
 
@@ -355,7 +355,7 @@ class Post(db.Model):
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    published = db.Column(db.DateTime, index=True, default=timestamp)
+    published = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
@@ -383,7 +383,7 @@ class Post(db.Model):
                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
                         'h1', 'h2', 'h3', 'p']
         target.body_html = bleach.linkify(markdown(value, output_format='html'))
-        target.timestamp = datetime.utcnow
+        target.timestamp = datetime.utcnow()
 
     def to_json(self):
         json_post = {
