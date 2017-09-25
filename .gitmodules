@@ -1,0 +1,4 @@
+[submodule "editor.md"]
+	path = app/static/components/editor.md
+	url = https://github.com/Tust-Celitea/editor.md.git
+
