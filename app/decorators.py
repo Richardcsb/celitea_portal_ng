@@ -25,3 +25,6 @@ def moderate_required(f):
 
 def hr_operate_required(f):
     return permission_required(Permission.MODERATE_REGISTRATIONS)(f)
+
+def member_required(f):
+    return permission_required(Permission.MEMBER)(f)

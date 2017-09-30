@@ -19,6 +19,7 @@
     <link href="{{ url_for('static', filename='css/materialize.min.css') }}" rel="stylesheet">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link href="{{ url_for('static', filename='css/pygmentize.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     {%- endblock styles %}
     {%- endblock head %}
@@ -67,7 +68,7 @@
             {% if current_user.is_moderator() %}
             <li><a href="{{ url_for('manage.manage_index') }}"><i class="material-icons">build</i>管理员工具箱</a></li>          
             {% endif %}
-            <li><a href="#"><i class="material-icons">archive</i>文章归档</a></li>            
+            <li><a href="{{ url_for('.archives') }}"><i class="material-icons">archive</i>文章归档</a></li>            
             {% block navbar %}
             {% endblock %}
             <li><div class="divider"></div></li>

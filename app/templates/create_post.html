@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "_wtf.html" as wtf %}
 
-{% block title %}发表帖子{% if current_user.is_moderator() %}（或文章）- {{super()}}{% endif %}{% endblock %}
+{% block title %}发表话题{% if current_user.is_moderator() %}（或文章）- {{super()}}{% endif %}{% endblock %}
 
 {%- block styles %}
 {{ super()}}
@@ -17,6 +17,30 @@
 
 {% block scripts %}
 {{ super() }}
-{{ editormd.include_editormd() }}
+{% if post %}
+<script src="/static/components/editor.md/editormd.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        var editor = editormd("editormd", {
+            path : "/static/components/editor.md/lib/", // Autoload modules mode, codemirror, marked... dependents libs path
+            width: "100%",
+            height: 740,
+            codeFold : true,
+            emoji : true,  
+            imageUpload : false,
+            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "https://img.yoitsu.moe",
+            crossDomainUpload : true,
+            classPrifex : "input-field",
+            onload : function() {
+                $.get("{{ url_for('main.post_raw',id=post.id)}}", function(md){
+                    editor.appendMarkdown(md);
+                })
+            }
+        });
+    });
 </script>
+{% else %}
+{{ editormd.include_editormd() }}
+{% endif %}
 {% endblock %}

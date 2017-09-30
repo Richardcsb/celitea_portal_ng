@@ -33,9 +33,21 @@ def server_shutdown():
 @main.route('/', methods=['GET', 'POST'])
 def index():
     if flask_login.current_user.is_member():
-        posts = models.Post.query.order_by(models.Post.timestamp.desc()).limit(10)
+        posts = models.Post.query.order_by(
+            models.Post.timestamp.desc()).limit(10)
     else:
-        posts = models.Post.query.filter_by(is_post=True).order_by(models.Post.timestamp.desc()).limit(10)
+        posts = models.Post.query.filter_by(is_post=True).order_by(
+            models.Post.timestamp.desc()).limit(10)
+    return flask.render_template('index.html', posts=posts)
+
+
+@main.route('/category/<category>')
+@decorators.member_required
+def category(category):
+    category_id = models.Category.query.filter_by(
+        name=category).first_or_404().id
+    posts = models.Post.query.filter_by(
+        category_id=category_id).order_by(models.Post.timestamp.desc())
     return flask.render_template('index.html', posts=posts)
 
 
@@ -131,6 +143,8 @@ def create_post():
 @main.route('/post/<int:id>', methods=['GET', 'POST'])
 def post(id):
     post = models.Post.query.get_or_404(id)
+    if not post.is_post and not flask_login.current_user.is_member():
+        flask.abort(403)
     form = forms.CommentForm()
     if form.validate_on_submit():
         comment = models.Comment(body=form.body.data,
@@ -143,6 +157,17 @@ def post(id):
     return flask.render_template('post.html', posts=[post], form=form,
                                  comments=comments)
 
+
+@main.route('/post/<int:id>.md', methods=['GET'])
+def post_raw(id):
+    post = models.Post.query.get_or_404(id)
+    if not post.is_post and not flask_login.current_user.is_member():
+        flask.abort(403)
+    response = flask.make_response(post.body)
+    response.headers['Content-Type'] = "text/plain"
+    return response
+
+
 @flask_login.login_required
 @main.route('/post/<int:id>/edit', methods=['GET', 'POST'])
 def edit_post(id):
@@ -152,11 +177,11 @@ def edit_post(id):
             flask.abort(403)
     form = forms.PostForm(allow_post=flask_login.current_user.is_moderator())
     if form.validate_on_submit():
-        post = models.Post(title=form.title.data,
-                           is_post=(form.category.data == 1),
-                           category_id=form.category.data,
-                           body=form.content.data,
-                           author_id=flask_login.current_user._get_current_object().id)
+        post.title = form.title.data
+        post.is_post = (form.category.data == 1)
+        post.category_id = form.category.data
+        post.body = form.content.data
+        post.author_id = flask_login.current_user._get_current_object().id
         models.db.session.add(post)
         models.db.session.commit()
         for tag in post.tags.all():
@@ -165,22 +190,35 @@ def edit_post(id):
             conn = models.PostConnection(
                 post_id=post.id, post_tag_id=tag)
             models.db.session.add(conn)
-        return flask.redirect(models.url_for('.post',id=id))
-    form.title.data=post.title
-    form.category.data=post.category
-    return flask.render_template('edit_post.html', form=form, current_user=flask_login.current_user)
+        return flask.redirect(models.url_for('.post', id=id))
+    form.title.data = post.title
+    form.category.data = post.category
+    form.tag.data = [tag.id for tag in post.tags.all()]
+    return flask.render_template('create_post.html', form=form, current_user=flask_login.current_user, post=post)
 
 
 @main.route('/feed.atom')
 def recent_feed():
     feed = werkzeug.contrib.atom.AtomFeed('Celitea 计算机精英协会',
-                    feed_url=flask.request.url, url=flask.request.url_root)
-    posts = models.Post.query.filter_by(is_post=True).order_by(models.Post.timestamp.desc()).limit(10).all()
+                                          feed_url=flask.request.url, url=flask.request.url_root)
+    posts = models.Post.query.filter_by(is_post=True).order_by(
+        models.Post.timestamp.desc()).limit(10).all()
     for post in posts:
         feed.add(post.title, post.body_html,
                  content_type='html',
                  author=post.author.username,
-                 url=flask.request.url_root+flask.url_for('.post',id=post.id),
+                 url=flask.request.url_root +
+                 flask.url_for('.post', id=post.id),
                  updated=post.timestamp,
                  published=post.published)
     return feed.get_response()
+
+
+@main.route('/archives')
+def archives():
+    if flask_login.current_user.is_member():
+        posts = models.Post.query.order_by(models.Post.timestamp.desc()).all()
+    else:
+        posts = models.Post.query.filter_by(is_post=True).order_by(
+            models.Post.timestamp.desc()).all()
+    return flask.render_template('archives.html', posts=posts)

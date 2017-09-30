@@ -2,7 +2,7 @@ from datetime import datetime
 import hashlib
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from markdown import markdown
+import markdown
 import bleach
 from flask import current_app, request, url_for
 from flask_login import UserMixin, AnonymousUserMixin
@@ -382,7 +382,12 @@ class Post(db.Model):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
                         'h1', 'h2', 'h3', 'p']
-        target.body_html = bleach.linkify(markdown(value, output_format='html'))
+        target.body_html = bleach.linkify(markdown.markdown(value, 
+                                ['markdown.extensions.extra',
+                                 'markdown.extensions.toc',
+                                 'markdown.extensions.sane_lists',
+                                 'markdown.extensions.codehilite'],
+                                output_format='html'))
         target.timestamp = datetime.utcnow()
 
     def to_json(self):
@@ -415,7 +420,7 @@ class Post(db.Model):
     
     @property
     def summary_html(self):
-        return bleach.linkify(markdown(self.summary, output_format='html'))
+        return bleach.linkify(markdown.markdown(self.summary, output_format='html'))
 
     @property
     def category(self):
@@ -445,7 +450,7 @@ class Comment(db.Model):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i',
                         'strong']
         target.body_html = bleach.linkify(bleach.clean(
-            markdown(value, output_format='html'),
+            markdown.markdown(value, output_format='html'),
             tags=allowed_tags, strip=True))
 
     def to_json(self):

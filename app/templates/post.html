@@ -2,6 +2,10 @@
 {% import "_wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
+{%- block styles %}
+{{ super()}}
+<link href="{{ url_for('static', filename='components/editor.md/css/editormd.min.css') }}" rel="stylesheet">
+{%- endblock styles %}
 
 {% block page_content %}
 {% for post in posts %}
@@ -12,17 +16,23 @@
         <a href="#"><i class="material-icons md-24">dashboard</i>{{ post.category.name }}&nbsp;&nbsp;</a>
         {% endif %}
         <a href="#comments"><i class="material-icons">chat_bubble</i> {{ len(comments) }}</a>
+        {% if post.author_id == current_user.id or current_user.is_administrator() %}
+        <a href="{{url_for('.edit_post',id=post.id)}}">
         <i class="material-icons md-24">access_time</i> {{ moment(post.timestamp).format("YYYY MMMM Do") }}
+        </a>
+        {% else %}
+        <i class="material-icons md-24">access_time</i> {{ moment(post.timestamp).format("YYYY MMMM Do") }}
+        {% endif %}
         {% for tag in post.tags %}
         {{ tag.post_tag_id.name }}
         {% endfor %}
         
 </h5>
 <hr />
-<div id="post_content" class="flow-text">
-    {% if post.body_html %} {{ post.body_html | safe }} {% else %} {{ post.body }} {% endif %}
-</div>
+<div id="post_content">
+    {{ post.body_html | safe }}
 {% endfor %}
+<hr/>
 <h3 id="comments">这个主题的讨论</h3>
 {% if current_user.can(Permission.COMMENT) %}
 <div class="comment-form">
@@ -30,4 +40,8 @@
 </div>
 {% endif %}
 {% include '_comments.html' %}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
 {% endblock %}
