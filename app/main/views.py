@@ -97,7 +97,7 @@ def edit_profile():
 
 @main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
 @flask_login.login_required
-@decorators.admin_required
+@decorators.hr_operate_required
 def edit_profile_admin(id):
     user = models.User.query.get_or_404(id)
     form = forms.EditProfileAdminForm(user=user)
