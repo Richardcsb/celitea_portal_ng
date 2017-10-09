@@ -68,7 +68,7 @@
             {% if current_user.is_moderator() %}
             <li><a href="{{ url_for('manage.manage_index') }}"><i class="material-icons">build</i>管理员工具箱</a></li>          
             {% endif %}
-            <li><a href="{{ url_for('.archives') }}"><i class="material-icons">archive</i>文章归档</a></li>            
+            <li><a href="{{ url_for('main.archives') }}"><i class="material-icons">archive</i>文章归档</a></li>            
             {% block navbar %}
             {% endblock %}
             <li><div class="divider"></div></li>
