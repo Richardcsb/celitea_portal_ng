@@ -132,7 +132,7 @@ def view(classnum):
         db.session.add(current_interview)
         if current_interview.status == 2:
             reg_user = User.query.filter_by(id=current_interview.id).first()
-            reg_user.role_id = 2
+            reg_user.role_id = 3
             db.session.add(reg_user)
         return flask.redirect(url_for('.lists'))
     form.status.data = current_interview.status
