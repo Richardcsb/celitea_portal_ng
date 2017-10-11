@@ -36,6 +36,8 @@ def register():
     if flask_login.current_user.can(Permission.MEMBER):
         flask.flash("汝已经是正式成员啦~")
         return flask.redirect('/')
+    if flask_login.current_user.is_anonymous:
+        flask.abort(403)
 
     form = RegistrationForm()
     registrations = set([registration.classnum for registration in

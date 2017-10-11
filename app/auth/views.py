@@ -50,13 +50,16 @@ def register():
     if form.validate_on_submit():
         user = User(email=form.email.data,
                     username=form.username.data,
-                    password=form.password.data)
+                    password=form.password.data,
+                    confirmed=1)
         db.session.add(user)
         db.session.commit()
         token = user.generate_confirmation_token()
-        send_email(user.email, '确认账户',
-                   'auth/email/confirm', user=user, token=token)
-        flask.flash('咱寄出了一封确认账户的电子邮件呐~去看看汝的收件箱呗.')
+        # confirm mail is disabled tempoary.
+        #send_email(user.email, '确认账户',
+        #           'auth/email/confirm', user=user, token=token)
+        #flask.flash('咱寄出了一封确认账户的电子邮件呐~去看看汝的收件箱呗.')
+
         return flask.redirect(flask.url_for('auth.login'))
     return flask.render_template('auth/register.html', form=form)
 
